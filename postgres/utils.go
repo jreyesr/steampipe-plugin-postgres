@@ -129,12 +129,13 @@ func protoToPostgresValue(val *proto.QualValue) string {
 }
 
 /*
-makeWhereConditions builds a string that contains the SQL conditions that match the passed quals
-The string doesn't contain the WHERE keyword!
+MakeSQLQuery composes a SQL query from a set of quals, sends it to a remote DB, and returns any results
 */
-func makeWhereConditions(quals plugin.KeyColumnQualMap) string {
-	conds := make([]string, 0)
+func MakeSQLQuery(ctx context.Context, connectionString, schema string, table string, quals plugin.KeyColumnQualMap) ([]map[string]any, error) {
+	query := fmt.Sprintf("SELECT * FROM %s.%s", schema, table)
 
+	// If there are any quals, build up a WHERE clause
+	conds := make([]string, 0)
 	for _, qualsForCol := range quals {
 		for _, qual := range qualsForCol.Quals {
 			if qual.Value.Value == nil {
@@ -144,26 +145,25 @@ func makeWhereConditions(quals plugin.KeyColumnQualMap) string {
 			}
 		}
 	}
+	// If there are any quals, actually append the WHERE ... part to the query string (which currently has SELECT * FROM tablename)
+	if len(conds) > 0 {
+		query = query + " WHERE " + strings.Join(conds, " AND ")
+	}
 
-	return strings.Join(conds, " AND ")
+	return MakeRawSQLQuery(ctx, connectionString, schema, table, query)
 }
 
 /*
-MakeSQLQuery sends a raw SQL query to a remote DB, and returns any results
+MakeRawSQLQuery sends a raw SQL query to a remote DB, and returns any results
 */
-func MakeSQLQuery(ctx context.Context, connectionString, schema string, table string, quals plugin.KeyColumnQualMap) ([]map[string]any, error) {
+func MakeRawSQLQuery(ctx context.Context, connectionString, schema string, table string, query string) ([]map[string]any, error) {
 	conn, err := connect(connectionString)
 	if err != nil {
 		return nil, fmt.Errorf("can't connect to DB: %w", err)
 	}
 	defer conn.Close()
 
-	query := fmt.Sprintf("SELECT * FROM %s.%s", schema, table)
-	whereConditions := makeWhereConditions(quals)
-	if len(whereConditions) > 0 {
-		query = query + " WHERE " + whereConditions
-	}
-	plugin.Logger(ctx).Debug("MakeSQLQuery.beforeExec", "query", query)
+	plugin.Logger(ctx).Debug("MakeRawSQLQuery.beforeExec", "query", query)
 	rows, err := conn.QueryContext(ctx, query)
 	if err != nil {
 		return nil, fmt.Errorf("error while making query \"%s\": %w", query, err)

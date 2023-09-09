@@ -56,7 +56,10 @@ func PluginTables(ctx context.Context, d *plugin.TableMapData) (map[string]*plug
 		plugin.Logger(ctx).Debug("postgres.PluginTables.makeTables", "table", tableSteampipe)
 		tables[tableAtlas.Name] = tableSteampipe
 	}
-	plugin.Logger(ctx).Debug("tfbridge.PluginTables.makeTables", "tables", tables)
 
+	// Manually add the raw table (that one will always exist, in addition to an unknown number of dynamic tables)
+	tables["raw"] = tableRawQuery(ctx, d.Connection)
+
+	plugin.Logger(ctx).Debug("tfbridge.PluginTables.makeTables", "tables", tables)
 	return tables, nil
 }

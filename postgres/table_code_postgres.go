@@ -71,15 +71,15 @@ func makeKeyColumns(ctx context.Context, tableAtlas *schema.Table) plugin.KeyCol
 	return all
 }
 
-func ListTable(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
+func ListTable(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (interface{}, error) {
 	config := GetConfig(d.Connection)
 	schemaName := *config.Schema
 	if schemaName == "" {
 		schemaName = "public"
 	}
 
-	plugin.Logger(ctx).Info("postgres.ListTable", "quals", d.Quals)
-	plugin.Logger(ctx).Info("postgres.ListTable", "schema", schemaName)
+	plugin.Logger(ctx).Debug("postgres.ListTable", "quals", d.Quals)
+	plugin.Logger(ctx).Debug("postgres.ListTable", "schema", schemaName)
 
 	results, err := MakeSQLQuery(ctx, *config.ConnectionString, schemaName, d.Table.Name, d.Quals)
 	if err != nil {
