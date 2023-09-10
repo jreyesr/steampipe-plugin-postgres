@@ -60,7 +60,7 @@ PostgresColTypeToSteampipeColType converts an Atlas column type to a Steampipe c
 Atlas column types correspond almost one-to-one to actual SQL types, either standard SQL or Postgres extensions.
 For example, DECIMAL, FLOAT and CURRENCY become DOUBLEs on Steampipe
 */
-func PostgresColTypeToSteampipeColType(col *schema.Column) proto.ColumnType {
+func PostgresColTypeToSteampipeColType(ctx context.Context, col *schema.Column) proto.ColumnType {
 	var x proto.ColumnType
 
 	switch t := col.Type.Type.(type) {
@@ -70,7 +70,7 @@ func PostgresColTypeToSteampipeColType(col *schema.Column) proto.ColumnType {
 		x = proto.ColumnType_BOOL
 	case *schema.DecimalType, *schema.FloatType, *postgres.CurrencyType:
 		x = proto.ColumnType_DOUBLE
-	case *schema.IntegerType:
+	case *schema.IntegerType, *postgres.SerialType:
 		x = proto.ColumnType_INT
 	case *schema.JSONType:
 		x = proto.ColumnType_JSON
@@ -86,7 +86,7 @@ func PostgresColTypeToSteampipeColType(col *schema.Column) proto.ColumnType {
 		}
 	default:
 		// As of writing this, these are the types that fall here, AKA those that we don't know how to translate
-		// *schema.SpatialType, *schema.UnsupportedType, *postgres.TextSearchType, *postgres.ArrayType, *postgres.SerialType, *postgres.OIDType, *postgres.RangeType, *postgres.UserDefinedType, *postgres.XMLType
+		// *schema.SpatialType, *schema.UnsupportedType, *postgres.TextSearchType, *postgres.ArrayType, *postgres.OIDType, *postgres.RangeType, *postgres.UserDefinedType, *postgres.XMLType
 		x = proto.ColumnType_UNKNOWN
 	}
 

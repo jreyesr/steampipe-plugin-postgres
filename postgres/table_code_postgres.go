@@ -39,9 +39,8 @@ func getMapKey(ctx context.Context, d *transform.TransformData) (interface{}, er
 func makeColumns(ctx context.Context, tableAtlas *schema.Table) []*plugin.Column {
 	columns := []*plugin.Column{}
 
-	// First the attributes (atomic/leaf params, with no nested business)
 	for _, col := range tableAtlas.Columns {
-		postgresType := PostgresColTypeToSteampipeColType(col)
+		postgresType := PostgresColTypeToSteampipeColType(ctx, col)
 		if postgresType == proto.ColumnType_UNKNOWN {
 			plugin.Logger(ctx).Warn("postgres.makeColumns", "msg", "unknown type, skipping column!", "column", col.Name, "type", col.Type.Raw)
 			continue
