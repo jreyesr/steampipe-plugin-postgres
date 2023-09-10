@@ -1,7 +1,7 @@
 
 See below for an example that mixes data from a static DB (contact information for the teams that own Kubernetes namespaces) and data from Kubernetes (which namespaces have Failed pods). This may be part of an automated alerting system that runs periodically and sends emails.
 
-![Alt text](image.png)
+![Alt text](docs/image.png)
 
 # Postgres Plugin for Steampipe
 
