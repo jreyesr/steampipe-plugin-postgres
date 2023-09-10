@@ -1,14 +1,14 @@
-
-See below for an example that mixes data from a static DB (contact information for the teams that own Kubernetes namespaces) and data from Kubernetes (which namespaces have Failed pods). This may be part of an automated alerting system that runs periodically and sends emails.
-
-![Alt text](docs/image.png)
-
 # Postgres Plugin for Steampipe
 
 Use SQL to query data from plain PostgreSQL databases.
 
 This repo contains a [Steampipe](https://steampipe.io/) plugin that exposes plain PostgreSQL databases as Steampipe tables, much like [the CSV plugin](https://hub.steampipe.io/plugins/turbot/csv) does for CSV files, or like a reverse proxy does for HTTP. This can be used to join API data with semi-static data that is hosted on databases.
 
+See below for an example that mixes data from a static DB (contact information for the teams that own Kubernetes namespaces) and data from Kubernetes (which namespaces have Failed pods). This may be part of an automated alerting system that runs periodically and sends emails.
+
+![Alt text](docs/image.png)
+
+Steampipe currently has no such functionality, with an alternative being exporting a copy of the Postgres DB as a CSV and then using the [CSV plugin](https://hub.steampipe.io/plugins/turbot/csv). However, the CSV file may be out of date, and you're responsible for keeping it updated. This plugin, instead, will always have up-to-date results, since it queries the backing Postgres DB whenever a query comes in to Steampipe. Another alternative is to manually install and configure [the `postgres-fdw` module on Steampipe](https://www.postgresql.org/docs/current/postgres-fdw.html), which requires connecting to the DB as root, is not documented and doesn't play too well with Dockerized deployments.
 
 - **[Get started →](https://hub.steampipe.io/plugins/jreyesr/postgres)**
 - Documentation: [Table definitions & examples](https://hub.steampipe.io/plugins/jreyesr/postgres/tables)
@@ -23,9 +23,9 @@ Install the plugin with [Steampipe](https://steampipe.io):
 steampipe plugin install jreyesr/postgres
 ```
 
-Configure your [config file](https://hub.steampipe.io/plugins/jreyesr/postgres#configuration) to point to a Postgres database, and optionally specify the schema too.
+Configure your [config file](https://hub.steampipe.io/plugins/jreyesr/postgres#configuration) to point to a Postgres database, and optionally specify the schema too. (If you don't, `public` will be used)
 
-Run steampipe:
+Run Steampipe:
 
 ```shell
 steampipe query
@@ -40,6 +40,8 @@ select
 from
   postgres.some_table;
 ```
+
+This plugin forwards all conditions that are supported by Steampipe to the remote DB. For example, a `WHERE col=1` condition _will_ be forwarded, so the remote DB can optimize its searches. More complex operators (such as JSONB operations) can't be forwarded and will thus result in a full table scan on the remote DB. In this case, the filtering will be applied by Steampipe.
 
 ## Developing
 
