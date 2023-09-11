@@ -78,10 +78,7 @@ func makeKeyColumns(ctx context.Context, tableAtlas *schema.Table) plugin.KeyCol
 
 func ListTable(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (interface{}, error) {
 	config := GetConfig(d.Connection)
-	schemaName := *config.Schema
-	if schemaName == "" {
-		schemaName = "public"
-	}
+	schemaName := config.GetSchema()
 
 	plugin.Logger(ctx).Debug("postgres.ListTable", "quals", d.Quals)
 	plugin.Logger(ctx).Debug("postgres.ListTable", "schema", schemaName)

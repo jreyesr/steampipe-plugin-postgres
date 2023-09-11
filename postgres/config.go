@@ -33,5 +33,15 @@ func GetConfig(connection *plugin.Connection) PostgresConfig {
 func (c PostgresConfig) String() string {
 	return fmt.Sprintf(
 		"PostgresConfig{schema=%s}",
-		*c.Schema) // can't print connection_string, since it has credentials embedded
+		c.GetSchema()) // can't print connection_string, since it has credentials embedded
+}
+
+/*
+GetSchema returns the schema that was configured in the .spc file, if available, and "public" otherwise
+*/
+func (c PostgresConfig) GetSchema() string {
+	if c.Schema != nil && *c.Schema != "" {
+		return *c.Schema
+	}
+	return "public"
 }

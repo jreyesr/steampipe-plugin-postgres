@@ -31,10 +31,7 @@ func PluginTables(ctx context.Context, d *plugin.TableMapData) (map[string]*plug
 	tables := map[string]*plugin.Table{}
 
 	config := GetConfig(d.Connection)
-	schemaName := *config.Schema
-	if schemaName == "" {
-		schemaName = "public"
-	}
+	schemaName := config.GetSchema()
 
 	schema, err := GetAtlasSchemaForDBSchema(ctx, *config.ConnectionString, schemaName)
 	if err != nil {

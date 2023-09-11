@@ -25,10 +25,7 @@ func tableRawQuery(ctx context.Context, connection *plugin.Connection) *plugin.T
 
 func ListRaw(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (interface{}, error) {
 	config := GetConfig(d.Connection)
-	schemaName := *config.Schema
-	if schemaName == "" {
-		schemaName = "public"
-	}
+	schemaName := config.GetSchema()
 
 	plugin.Logger(ctx).Debug("raw.ListRaw", "equalsQuals", d.EqualsQuals)
 	plugin.Logger(ctx).Debug("raw.ListRaw", "schema", schemaName)
