@@ -37,7 +37,7 @@ func getMapKey(ctx context.Context, d *transform.TransformData) (interface{}, er
 }
 
 func makeColumns(ctx context.Context, tableAtlas *schema.Table) []*plugin.Column {
-	columns := []*plugin.Column{}
+	columns := make([]*plugin.Column, 0, len(tableAtlas.Columns))
 
 	for _, col := range tableAtlas.Columns {
 		postgresType := PostgresColTypeToSteampipeColType(ctx, col)
@@ -58,9 +58,15 @@ func makeColumns(ctx context.Context, tableAtlas *schema.Table) []*plugin.Column
 
 func makeKeyColumns(ctx context.Context, tableAtlas *schema.Table) plugin.KeyColumnSlice {
 	var all = make([]*plugin.KeyColumn, 0, len(tableAtlas.Columns))
-	for _, c := range tableAtlas.Columns {
+
+	for _, col := range tableAtlas.Columns {
+		postgresType := PostgresColTypeToSteampipeColType(ctx, col)
+		if postgresType == proto.ColumnType_UNKNOWN {
+			plugin.Logger(ctx).Warn("postgres.makeColumns", "msg", "unknown type, skipping column!", "column", col.Name, "type", col.Type.Raw)
+			continue
+		}
 		all = append(all, &plugin.KeyColumn{
-			Name:      c.Name,
+			Name:      col.Name,
 			Operators: plugin.GetValidOperators(), // Everything is valid! Just reuse Steampipe's own "list of all operators that can be handled"
 			Require:   plugin.Optional,
 		})
