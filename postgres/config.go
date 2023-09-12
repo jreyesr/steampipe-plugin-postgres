@@ -9,13 +9,15 @@ import (
 )
 
 type PostgresConfig struct {
-	ConnectionString *string `cty:"connection_string"`
-	Schema           *string `cty:"schema"`
+	ConnectionString *string  `cty:"connection_string"`
+	Schema           *string  `cty:"schema"`
+	TablesToExpose   []string `cty:"tables_to_expose"`
 }
 
 var ConfigSchema = map[string]*schema.Attribute{
 	"connection_string": {Type: schema.TypeString},
 	"schema":            {Type: schema.TypeString},
+	"tables_to_expose":  {Type: schema.TypeList, Elem: &schema.Attribute{Type: schema.TypeString}},
 }
 
 func ConfigInstance() interface{} {
