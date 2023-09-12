@@ -1,6 +1,6 @@
 module github.com/jreyesr/steampipe-plugin-postgres
 
-go 1.20
+go 1.19
 
 require (
 	ariga.io/atlas v0.14.1-0.20230906140243-509a6c18d65f

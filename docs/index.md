@@ -2,7 +2,7 @@
 organization: jreyesr
 category: ["software development"]
 icon_url: "/images/plugins/jreyesr/postgres.svg"
-brand_color: "#844FBA"
+brand_color: "#336791"
 display_name: Postgres
 name: postgres
 description: Steampipe plugin for proxying queries to plain Postgres databases

@@ -41,7 +41,7 @@ The following examples all use the Sakila database. However, note that this plug
 
 ```sql
 select 
-  * 
+  actor_id, first_name, last_name, last_update
 from 
   postgres.actor 
 ```
@@ -68,7 +68,7 @@ transferred from the data source to Steampipe.
 
 ```sql
 select 
-  * 
+  actor_id, first_name, last_name, last_update
 from 
   postgres.actor 
 where
