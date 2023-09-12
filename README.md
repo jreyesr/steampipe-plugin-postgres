@@ -23,7 +23,23 @@ Install the plugin with [Steampipe](https://steampipe.io):
 steampipe plugin install jreyesr/postgres
 ```
 
-Configure your [config file](https://hub.steampipe.io/plugins/jreyesr/postgres#configuration) to point to a Postgres database, and optionally specify the schema too. (If you don't, `public` will be used)
+Installing the latest Postgres plugin will create a config file (`~/.steampipe/config/postgres.spc`) with a single connection named `postgres`:
+
+```hcl
+connection "postgres" {
+  plugin = "jreyesr/postgres"
+
+  # Write a connection string, in the form that is expected by the pgx package:
+  # https://pkg.go.dev/github.com/jackc/pgx/v5#hdr-Establishing_a_Connection
+  # Required
+  # Can also be set with the `DATABASE_URL` environment variable
+  # connection_string = "postgres://username:password@localhost:5432/database_name"
+
+  # The remote DB's schema that this plugin will expose
+  # If you leave this unset, it'll default to `public`
+  # schema = "public"
+}
+```
 
 Run Steampipe:
 

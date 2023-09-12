@@ -2,6 +2,7 @@ package postgres
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/turbot/steampipe-plugin-sdk/v5/plugin"
 	"github.com/turbot/steampipe-plugin-sdk/v5/plugin/schema"
@@ -44,4 +45,16 @@ func (c PostgresConfig) GetSchema() string {
 		return *c.Schema
 	}
 	return "public"
+}
+
+func (c PostgresConfig) GetConnectionString() (string, error) {
+	if c.ConnectionString != nil && *c.ConnectionString != "" {
+		return *c.ConnectionString, nil
+	}
+
+	if v := os.Getenv("DATABASE_URL"); v != "" {
+		return v, nil
+	}
+
+	return "", fmt.Errorf("please provide either the connection_string param or the DATABASE_URL envvar")
 }

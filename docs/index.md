@@ -122,6 +122,7 @@ connection "postgres" {
   # Write a connection string, in the form that is expected by the pgx package:
   # https://pkg.go.dev/github.com/jackc/pgx/v5#hdr-Establishing_a_Connection
   # Required
+  # Can also be set with the `DATABASE_URL` environment variable
   # connection_string = "postgres://username:password@localhost:5432/database_name"
 
   # The remote DB's schema that this plugin will expose
@@ -130,7 +131,7 @@ connection "postgres" {
 }
 ```
 
-Uncomment and edit the `connection_string` parameter as described in the previous section.
+Uncomment and edit the `connection_string` parameter as described in the previous section. Alternatively, provide the `DATABASE_URL` envvar.
 
 If the tables that you wish to expose don't live in the `public` schema on the remote DB, also uncomment and edit the `schema` parameter. If you don't provide it, it'll default to `public`.
 

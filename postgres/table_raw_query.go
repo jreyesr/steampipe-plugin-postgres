@@ -25,12 +25,16 @@ func tableRawQuery(ctx context.Context, connection *plugin.Connection) *plugin.T
 
 func ListRaw(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (interface{}, error) {
 	config := GetConfig(d.Connection)
+	connectionString, err := config.GetConnectionString()
+	if err != nil {
+		return nil, err
+	}
 	schemaName := config.GetSchema()
 
 	plugin.Logger(ctx).Debug("raw.ListRaw", "equalsQuals", d.EqualsQuals)
 	plugin.Logger(ctx).Debug("raw.ListRaw", "schema", schemaName)
 
-	results, err := MakeRawSQLQuery(ctx, *config.ConnectionString, schemaName, d.Table.Name, d.EqualsQuals["query"].GetStringValue())
+	results, err := MakeRawSQLQuery(ctx, connectionString, schemaName, d.Table.Name, d.EqualsQuals["query"].GetStringValue())
 	if err != nil {
 		return nil, err
 	}

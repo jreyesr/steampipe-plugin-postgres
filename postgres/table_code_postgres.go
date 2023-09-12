@@ -78,12 +78,16 @@ func makeKeyColumns(ctx context.Context, tableAtlas *schema.Table) plugin.KeyCol
 
 func ListTable(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (interface{}, error) {
 	config := GetConfig(d.Connection)
+	connectionString, err := config.GetConnectionString()
+	if err != nil {
+		return nil, err
+	}
 	schemaName := config.GetSchema()
 
 	plugin.Logger(ctx).Debug("postgres.ListTable", "quals", d.Quals)
 	plugin.Logger(ctx).Debug("postgres.ListTable", "schema", schemaName)
 
-	results, err := MakeSQLQuery(ctx, *config.ConnectionString, schemaName, d.Table.Name, d.Quals)
+	results, err := MakeSQLQuery(ctx, connectionString, schemaName, d.Table.Name, d.Quals)
 	if err != nil {
 		return nil, err
 	}

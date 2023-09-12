@@ -31,9 +31,13 @@ func PluginTables(ctx context.Context, d *plugin.TableMapData) (map[string]*plug
 	tables := map[string]*plugin.Table{}
 
 	config := GetConfig(d.Connection)
+	connectionString, err := config.GetConnectionString()
+	if err != nil {
+		return nil, err
+	}
 	schemaName := config.GetSchema()
 
-	schema, err := GetAtlasSchemaForDBSchema(ctx, *config.ConnectionString, schemaName)
+	schema, err := GetAtlasSchemaForDBSchema(ctx, connectionString, schemaName)
 	if err != nil {
 		plugin.Logger(ctx).Error("postgres.PluginTables", "get_schema_error", err)
 		return nil, err
