@@ -138,7 +138,7 @@ connection "postgres" {
   #  - "users" will only expose the specific table "users"
   # You can have several items (for example, ["auth-*", "users"] will expose 
   # all the tables that start with "auth-", PLUS the table "users")
-  # Defaults to all custom resources
+  # Defaults to all tables
   tables_to_expose = ["*"]
 }
 ```
