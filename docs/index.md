@@ -5,8 +5,8 @@ icon_url: "/images/plugins/jreyesr/postgres.svg"
 brand_color: "#336791"
 display_name: Postgres
 name: postgres
-description: Steampipe plugin for proxying queries to plain Postgres databases
-og_description: Query any Postgres table from Steampipe with SQL! Open source CLI. No DB required.
+description: "Steampipe plugin for proxying queries to plain Postgres databases"
+og_description: "Query any Postgres table from Steampipe with SQL! Open source CLI. No DB required.""
 og_image: "/images/plugins/jreyesr/postgres-social-graphic.png"
 ---
 
@@ -26,67 +26,13 @@ This plugin forwards all conditions that are supported by Steampipe to the remot
 For example (using [the Sakila example database](https://github.com/jOOQ/sakila)):
 
 ```sql
-select 
-    actor_id, first_name, last_name, last_update 
-from 
-    postgres.actor 
-limit 10
-```
-
-```
-+----------+------------+-----------+---------------------------+--------------------------------+
-| actor_id | first_name | last_name | last_update               | _ctx                           |
-+----------+------------+-----------+---------------------------+--------------------------------+
-| 8        | MATTHEW    | JOHANSSON | 2006-02-14T23:34:33-05:00 | {"connection_name":"postgres"} |
-| 100      | SPENCER    | DEPP      | 2006-02-14T23:34:33-05:00 | {"connection_name":"postgres"} |
-| 9        | JOE        | SWANK     | 2006-02-14T23:34:33-05:00 | {"connection_name":"postgres"} |
-| 10       | CHRISTIAN  | GABLE     | 2006-02-14T23:34:33-05:00 | {"connection_name":"postgres"} |
-| 11       | ZERO       | CAGE      | 2006-02-14T23:34:33-05:00 | {"connection_name":"postgres"} |
-| 12       | KARL       | BERRY     | 2006-02-14T23:34:33-05:00 | {"connection_name":"postgres"} |
-| 13       | UMA        | WOOD      | 2006-02-14T23:34:33-05:00 | {"connection_name":"postgres"} |
-| 1        | PENELOPE   | GUINESS   | 2006-02-14T23:34:33-05:00 | {"connection_name":"postgres"} |
-| 2        | NICK       | WAHLBERG  | 2006-02-14T23:34:33-05:00 | {"connection_name":"postgres"} |
-| 14       | VIVIEN     | BERGEN    | 2006-02-14T23:34:33-05:00 | {"connection_name":"postgres"} |
-+----------+------------+-----------+---------------------------+--------------------------------+
-```
-
-```sql
-select 
-  film_id, title, description, release_year, lang
-from 
-  postgres.film 
-where
-  description ILIKE '% epic %'
-```
-
-```
-+---------+-------------------+--------------------------------------------------------------------------------------------------+--------------+----->
-| film_id | title             | description                                                                                      | release_year | lang>
-+---------+-------------------+--------------------------------------------------------------------------------------------------+--------------+----->
-| 30      | ANYTHING SAVANNAH | A Epic Story of a Pastry Chef And a Woman who must Chase a Feminist in An Abandoned Fun House    | 2006         | 1   >
-| 145     | CHISUM BEHAVIOR   | A Epic Documentary of a Sumo Wrestler And a Butler who must Kill a Car in Ancient India          | 2006         | 1   >
-| 1       | ACADEMY DINOSAUR  | A Epic Drama of a Feminist And a Mad Scientist who must Battle a Teacher in The Canadian Rockies | 2006         | 1   >
-| 53      | BANG KWAI         | A Epic Drama of a Madman And a Cat who must Face a A Shark in An Abandoned Amusement Park        | 2006         | 1   >
-...
-+---------+-------------------+--------------------------------------------------------------------------------------------------+--------------+----->
-```
-
-Or, for ultimate power, just send a raw query to the remote DB:
-
-```sql
-select 
-    query, data
-from 
-    postgres.raw
-where 
-    query='SELECT * FROM film JOIN language USING (language_id) LIMIT 3' LIMIT 2
-```
-+--------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------->
-| query                                                        | data                                                                                                          >
-+--------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------->
-| SELECT * FROM film JOIN language USING (language_id) LIMIT 3 | {"description":"A Epic Drama of a Feminist And a Mad Scientist who must Battle a Teacher in The Canadian Rocki>
-| SELECT * FROM film JOIN language USING (language_id) LIMIT 3 | {"description":"A Astounding Epistle of a Database Administrator And a Explorer who must Find a Car in Ancient>
-+--------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------->
+select
+  actor_id,
+  first_name,
+  last_name,
+  last_update 
+from
+  postgres.actor limit 10;
 ```
 
 ## Documentation
@@ -119,18 +65,15 @@ Installing the latest Postgres plugin will create a config file (`~/.steampipe/c
 connection "postgres" {
   plugin = "jreyesr/postgres"
 
-  # Write a connection string, in the form that is expected by the pgx package:
-  # https://pkg.go.dev/github.com/jackc/pgx/v5#hdr-Establishing_a_Connection
-  # Required
-  # Can also be set with the `DATABASE_URL` environment variable
+  # A connection string (https://pkg.go.dev/github.com/jackc/pgx/v5#hdr-Establishing_a_Connection), in the form that is 
+  expected by the pgx package. Required. 
+  # Can also be set with the `DATABASE_URL` environment variable.
   # connection_string = "postgres://username:password@localhost:5432/database_name"
 
-  # The remote DB's schema that this plugin will expose
-  # If you leave this unset, it'll default to `public`
+  # The remote DB's schema that this plugin will expose. If you leave this unset, it'll default to `public`.
   # schema = "public"
 
-  # List of tables that will be exposed from the remote DB.
-  # No dynamic tables will be created if this arg is empty or not set.
+  # List of tables that will be exposed from the remote DB. No dynamic tables will be created if this arg is empty or not set.
   # Wildcard based searches are supported.
   # For example:
   #  - "*" will expose every table in the remote DB
@@ -139,8 +82,14 @@ connection "postgres" {
   # You can have several items (for example, ["auth-*", "users"] will expose 
   # all the tables that start with "auth-", PLUS the table "users")
   # Defaults to all tables
-  tables_to_expose = ["*"]
+  # tables_to_expose = ["*"]
 }
+```
+
+Alternatively, you can also use the following environment variable to obtain credentials **only if the other argument (`connection_string`)** is not specified in the connection:
+
+```bash
+export DATABASE_URL=postgres://username:password@localhost:5432/database_name
 ```
 
 Uncomment and edit the `connection_string` parameter as described in the previous section. Alternatively, provide the `DATABASE_URL` envvar.
@@ -149,5 +98,5 @@ If the tables that you wish to expose don't live in the `public` schema on the r
 
 ## Get involved
 
-* Open source: https://github.com/jreyesr/steampipe-plugin-postgres
-* Community: [Join #steampipe on Slack →](https://turbot.com/community/join)
+- Open source: https://github.com/jreyesr/steampipe-plugin-postgres
+- Community: [Join #steampipe on Slack →](https://turbot.com/community/join)

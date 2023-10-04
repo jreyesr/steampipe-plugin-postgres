@@ -60,3 +60,13 @@ func (c PostgresConfig) GetConnectionString() (string, error) {
 
 	return "", fmt.Errorf("please provide either the connection_string param or the DATABASE_URL envvar")
 }
+
+/*
+GetTablesToExpose returns the slice of table blobs that was configured in the .spc file, if set, and ["*"] otherwise (which will expose every table)
+*/
+func (c PostgresConfig) GetTablesToExpose() []string {
+	if len(c.TablesToExpose) > 0 {
+		return c.TablesToExpose
+	}
+	return []string{"*"}
+}

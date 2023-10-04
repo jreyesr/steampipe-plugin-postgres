@@ -17,7 +17,7 @@ Steampipe currently has no such functionality, with an alternative being exporti
 
 ## Quick start
 
-Install the plugin with [Steampipe](https://steampipe.io):
+Download and install the latest Postgres plugin:
 
 ```shell
 steampipe plugin install jreyesr/postgres
@@ -29,18 +29,15 @@ Installing the latest Postgres plugin will create a config file (`~/.steampipe/c
 connection "postgres" {
   plugin = "jreyesr/postgres"
 
-  # Write a connection string, in the form that is expected by the pgx package:
-  # https://pkg.go.dev/github.com/jackc/pgx/v5#hdr-Establishing_a_Connection
-  # Required
-  # Can also be set with the `DATABASE_URL` environment variable
+  # A connection string (https://pkg.go.dev/github.com/jackc/pgx/v5#hdr-Establishing_a_Connection), in the form that is 
+  expected by the pgx package. Required. 
+  # Can also be set with the `DATABASE_URL` environment variable.
   # connection_string = "postgres://username:password@localhost:5432/database_name"
 
-  # The remote DB's schema that this plugin will expose
-  # If you leave this unset, it'll default to `public`
+  # The remote DB's schema that this plugin will expose. If you leave this unset, it'll default to `public`.
   # schema = "public"
 
-  # List of tables that will be exposed from the remote DB.
-  # No dynamic tables will be created if this arg is empty or not set.
+  # List of tables that will be exposed from the remote DB. No dynamic tables will be created if this arg is empty or not set.
   # Wildcard based searches are supported.
   # For example:
   #  - "*" will expose every table in the remote DB
@@ -49,8 +46,14 @@ connection "postgres" {
   # You can have several items (for example, ["auth-*", "users"] will expose 
   # all the tables that start with "auth-", PLUS the table "users")
   # Defaults to all tables
-  tables_to_expose = ["*"]
+  # tables_to_expose = ["*"]
 }
+```
+
+Alternatively, you can also use the following environment variable to obtain credentials **only if the other argument (`connection_string`)** is not specified in the connection:
+
+```bash
+export DATABASE_URL=postgres://username:password@localhost:5432/database_name
 ```
 
 Run Steampipe:
@@ -113,3 +116,8 @@ Further reading:
 ## Contributing
 
 Please see the [contribution guidelines](https://github.com/turbot/steampipe/blob/main/CONTRIBUTING.md) and our [code of conduct](https://github.com/turbot/steampipe/blob/main/CODE_OF_CONDUCT.md). All contributions are subject to the [Apache 2.0 open source license](https://github.com/jreyesr/steampipe-plugin-postgres/blob/master/LICENSE.md).
+
+`help wanted` issues:
+
+- [Steampipe](https://github.com/turbot/steampipe/labels/help%20wanted)
+- [Postgres Plugin](https://github.com/jreyesr/steampipe-plugin-postgres/labels/help%20wanted)

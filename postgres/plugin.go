@@ -11,7 +11,7 @@ import (
 
 func Plugin(ctx context.Context) *plugin.Plugin {
 	p := &plugin.Plugin{
-		Name:             "steampipe-plugin-postgres",
+		Name: "steampipe-plugin-postgres",
 		DefaultTransform: transform.FromGo().NullIfZero(),
 		ConnectionConfigSchema: &plugin.ConnectionConfigSchema{
 			NewInstance: ConfigInstance,
@@ -47,8 +47,8 @@ func PluginTables(ctx context.Context, d *plugin.TableMapData) (map[string]*plug
 
 	temp_table_names := []string{} // this is to keep track of the tables that we've already added
 
-	plugin.Logger(ctx).Debug("postgres.PluginTables", "tables", schema.Tables, "patterns", config.TablesToExpose)
-	for _, pattern := range config.TablesToExpose {
+	plugin.Logger(ctx).Debug("postgres.PluginTables", "tables", schema.Tables, "patterns", config.GetTablesToExpose())
+	for _, pattern := range config.GetTablesToExpose() {
 		for _, tableAtlas := range schema.Tables {
 
 			if helpers.StringSliceContains(temp_table_names, tableAtlas.Name) {
