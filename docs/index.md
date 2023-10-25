@@ -5,8 +5,8 @@ icon_url: "/images/plugins/jreyesr/postgres.svg"
 brand_color: "#336791"
 display_name: Postgres
 name: postgres
-description: "Steampipe plugin for proxying queries to plain Postgres databases"
-og_description: "Query any Postgres table from Steampipe with SQL! Open source CLI. No DB required.""
+description: "Steampipe plugin for proxying queries to plain Postgres databases."
+og_description: "Query any Postgres table from Steampipe with SQL! Open source CLI. No DB required."
 og_image: "/images/plugins/jreyesr/postgres-social-graphic.png"
 ---
 

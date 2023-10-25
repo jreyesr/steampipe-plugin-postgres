@@ -18,7 +18,7 @@ func tablePostgres(ctx context.Context, connection *plugin.Connection) (*plugin.
 		Name:        name,
 		Description: FindCommentOnAttrs(tableAtlas.Attrs),
 		List: &plugin.ListConfig{
-			Hydrate:    ListTable,
+			Hydrate:    ListTableRecords,
 			KeyColumns: makeKeyColumns(ctx, tableAtlas),
 		},
 		Columns: makeColumns(ctx, tableAtlas),
@@ -76,7 +76,7 @@ func makeKeyColumns(ctx context.Context, tableAtlas *schema.Table) plugin.KeyCol
 	return all
 }
 
-func ListTable(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (interface{}, error) {
+func ListTableRecords(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (interface{}, error) {
 	config := GetConfig(d.Connection)
 	connectionString, err := config.GetConnectionString()
 	if err != nil {

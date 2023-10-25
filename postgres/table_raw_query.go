@@ -13,7 +13,7 @@ func tableRawQuery(ctx context.Context, connection *plugin.Connection) *plugin.T
 		Name:        "raw_query",
 		Description: "Makes a raw SQL query (as a string) and returns any results as a single JSONB column. Use for more complex queries",
 		List: &plugin.ListConfig{
-			Hydrate:    ListRaw,
+			Hydrate:    ListRawResults,
 			KeyColumns: plugin.SingleColumn("query"),
 		},
 		Columns: []*plugin.Column{
@@ -23,7 +23,7 @@ func tableRawQuery(ctx context.Context, connection *plugin.Connection) *plugin.T
 	}
 }
 
-func ListRaw(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (interface{}, error) {
+func ListRawResults(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (interface{}, error) {
 	config := GetConfig(d.Connection)
 	connectionString, err := config.GetConnectionString()
 	if err != nil {
