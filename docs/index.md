@@ -66,7 +66,7 @@ connection "postgres" {
   plugin = "jreyesr/postgres"
 
   # A connection string (https://pkg.go.dev/github.com/jackc/pgx/v5#hdr-Establishing_a_Connection), in the form that is 
-  expected by the pgx package. Required. 
+  # expected by the pgx package. Required. 
   # Can also be set with the `DATABASE_URL` environment variable.
   # connection_string = "postgres://username:password@localhost:5432/database_name"
 
